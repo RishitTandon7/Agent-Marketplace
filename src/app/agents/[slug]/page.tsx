@@ -99,7 +99,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ sl
               <div className="bg-p-surface border-2 border-p-black rounded-2xl p-6 premium-static">
                 <div className="text-[10px] text-p-black/50 uppercase tracking-widest font-bold mb-3">REST Endpoint</div>
                 <code className="block bg-p-bg border-2 border-p-black/10 rounded-xl p-4 font-mono text-sm text-p-black/80 break-all select-all">
-                  POST https://agentlab.dev/api/v1/agents/{agent.slug}/run
+                  POST https://agentlab.rishit.site/api/v1/agents/{agent.slug}/run
                 </code>
               </div>
 
