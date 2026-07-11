@@ -546,7 +546,7 @@ export default function PlaygroundClient({ agent }: Props) {
               </div>
               <pre className="p-5 font-mono text-xs text-p-lime overflow-x-auto whitespace-pre-wrap leading-relaxed">
 {`curl -X POST \\
-  https://api.agentlab.dev/v1/execute/${agent.slug} \\
+  https://agentlab.rishit.site/api/v1/agents/${agent.slug}/run \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '${JSON.stringify(
