@@ -29,14 +29,14 @@ export default function CodeSnippetTabs({ slug, inputSchema }: Props) {
   // Language snippets
   const snippets: Record<Lang, string> = {
     curl: `curl -X POST \\
-  https://agentlab.dev/api/v1/agents/${slug}/run \\
+  https://agentlab.rishit.site/api/v1/agents/${slug}/run \\
   -H "Authorization: Bearer ahub_lv_<your_api_key>" \\
   -H "Content-Type: application/json" \\
   -d '${JSON.stringify(payload, null, 2).replace(/'/g, "'\\''")}'`,
 
     javascript: `// Node.js or Browser Fetch
 const runAgent = async () => {
-  const res = await fetch("https://agentlab.dev/api/v1/agents/${slug}/run", {
+  const res = await fetch("https://agentlab.rishit.site/api/v1/agents/${slug}/run", {
     method: "POST",
     headers: {
       "Authorization": "Bearer ahub_lv_<your_api_key>",
@@ -57,7 +57,7 @@ runAgent();`,
 
     python: `import requests
 
-url = "https://agentlab.dev/api/v1/agents/${slug}/run"
+url = "https://agentlab.rishit.site/api/v1/agents/${slug}/run"
 headers = {
     "Authorization": "Bearer ahub_lv_<your_api_key>",
     "Content-Type": "application/json"
@@ -83,7 +83,7 @@ import (
 )
 
 func main() {
-	url := "https://agentlab.dev/api/v1/agents/${slug}/run"
+	url := "https://agentlab.rishit.site/api/v1/agents/${slug}/run"
 	
 	payload := map[string]interface{}{
 		${Object.entries(payload).map(([k, v]) => `"${k}": ${typeof v === 'string' ? `"${v}"` : v},`).join('\n\t\t')}
