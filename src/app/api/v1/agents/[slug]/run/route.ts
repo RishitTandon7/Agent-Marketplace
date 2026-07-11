@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import crypto from 'crypto'
 
 /**
@@ -14,11 +14,6 @@ import crypto from 'crypto'
  * (simple DB-level for now; upgrade to Redis/Upstash post-launch)
  */
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 function hashKey(raw: string): string {
   return crypto.createHash('sha256').update(raw).digest('hex')
 }
@@ -27,6 +22,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const supabase = createAdminClient()
   const { slug } = await params
   const startMs = Date.now()
 
@@ -184,6 +180,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
+  const supabase = createAdminClient()
 
   const { data: agent } = await supabase
     .from('agents')
