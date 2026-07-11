@@ -33,7 +33,7 @@ export async function POST(
       {
         error:   'Missing or invalid API key.',
         hint:    'Set the Authorization header: Authorization: Bearer ahub_lv_<your_key>',
-        docs:    'https://agentlab.dev/docs/api',
+        docs:    'https://agentlab.rishit.site/docs/api',
       },
       { status: 401 }
     )
@@ -96,7 +96,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:    `"${agent.name}" is a premium agent.`,
-          hint:     'Subscribe at https://agentlab.dev/agents/' + slug,
+          hint:     'Subscribe at https://agentlab.rishit.site/agents/' + slug,
           agent:    slug,
           premium:  true,
         },
@@ -195,7 +195,7 @@ export async function GET(
     agent,
     endpoint:    `POST /api/v1/agents/${slug}/run`,
     auth:        'Authorization: Bearer ahub_lv_<your_api_key>',
-    docs:        `https://agentlab.dev/agents/${slug}`,
+    docs:        `https://agentlab.rishit.site/agents/${slug}`,
     input_schema: agent.input_schema,
   })
 }
