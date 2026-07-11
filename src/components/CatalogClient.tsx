@@ -188,11 +188,12 @@ export default function CatalogClient({ agents, userName, userEmail, userAvatar 
 
   // Dynamic greeting based on time of day
   const greeting = useMemo(() => {
+    if (!mounted) return 'Welcome'
     const hr = new Date().getHours()
     if (hr < 12) return 'Good morning'
     if (hr < 17) return 'Good afternoon'
     return 'Good evening'
-  }, [])
+  }, [mounted])
 
   // Spotlight agent selection (prefer sms-sender or code-explainer, fallback to first)
   const spotlightAgent = useMemo(() => {

@@ -23,6 +23,7 @@ export default function ApiKeysPanel() {
   const [newKeyValue, setNewKeyValue] = useState<string | null>(null) // shown once
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   const fetchKeys = useCallback(async () => {
     setLoading(true)
@@ -39,7 +40,10 @@ export default function ApiKeysPanel() {
     }
   }, [])
 
-  useEffect(() => { fetchKeys() }, [fetchKeys])
+  useEffect(() => {
+    setMounted(true)
+    fetchKeys()
+  }, [fetchKeys])
 
   async function createKey() {
     if (creating) return
@@ -85,6 +89,7 @@ export default function ApiKeysPanel() {
   }
 
   function formatDate(d: string | null) {
+    if (!mounted) return ''
     if (!d) return 'Never'
     return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   }

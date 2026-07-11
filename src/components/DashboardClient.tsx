@@ -104,6 +104,7 @@ export default function DashboardClient({
   subscriptions 
 }: Props) {
   const [tab, setTab] = useState<Tab>('agents')
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
 
   // API Key States
@@ -142,6 +143,7 @@ export default function DashboardClient({
   }, [fetchKeys])
 
   useEffect(() => {
+    setMounted(true)
     const params = new URLSearchParams(window.location.search)
     const t = params.get('tab') as Tab
     if (t === 'agents' || t === 'logs' || t === 'purchases') {
@@ -515,13 +517,15 @@ func main() {
                     const agentName = sub.agent?.name ?? 'Unknown Agent'
                     const isPremium = sub.agent?.is_premium ?? false
                     const amountText = isPremium ? `₹${(sub.agent?.price_inr / 100).toFixed(2)}` : '₹0.00'
-                    const dateFormatted = new Date(sub.created_at || new Date()).toLocaleDateString('en-IN', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })
+                    const dateFormatted = mounted
+                      ? new Date(sub.created_at || new Date()).toLocaleDateString('en-IN', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : ''
                     const invoiceNo = `INV-${sub.razorpay_subscription_id?.split('_')[1]?.toUpperCase() || sub.id.slice(0, 8).toUpperCase()}`
 
                     return (
