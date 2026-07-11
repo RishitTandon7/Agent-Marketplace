@@ -391,7 +391,7 @@ export default function DashboardClient({
                           <div className="bg-p-bg border border-p-black/10 rounded-xl p-4 font-sans text-xs text-p-black/70 space-y-2">
                             <div className="font-semibold text-p-black">API Execution Endpoint:</div>
                             <code className="block bg-white border border-p-black/5 rounded p-2 font-mono text-[11px] text-p-black">
-                              POST https://agentlab.dev/api/v1/agents/{agent.slug}/run
+                              POST https://agentlab.rishit.site/api/v1/agents/{agent.slug}/run
                             </code>
 
                             {/* Collapsible Integration Snippets */}
@@ -425,13 +425,13 @@ export default function DashboardClient({
                                   {/* Code Block */}
                                   <div className="relative">
                                     <pre className="bg-white border border-p-black/10 rounded-lg p-3 overflow-x-auto text-[10px] font-mono text-p-black/80">
-                                      {activeLang === 'curl' && `curl -X POST https://agentlab.dev/api/v1/agents/${agent.slug}/run \\
+                                      {activeLang === 'curl' && `curl -X POST https://agentlab.rishit.site/api/v1/agents/${agent.slug}/run \\
   -H "Authorization: Bearer ${apiToken}" \\
   -H "Content-Type: application/json" \\
   -d '${JSON.stringify(agent.input_schema || { text: 'Hello world' })}'`}
 
                                       {activeLang === 'javascript' && `// Node.js implementation
-const res = await fetch("https://agentlab.dev/api/v1/agents/${agent.slug}/run", {
+const res = await fetch("https://agentlab.rishit.site/api/v1/agents/${agent.slug}/run", {
   method: "POST",
   headers: {
     "Authorization": "Bearer ${apiToken}",
@@ -446,7 +446,7 @@ console.log(data);`}
 import requests
 
 res = requests.post(
-    "https://agentlab.dev/api/v1/agents/${agent.slug}/run",
+    "https://agentlab.rishit.site/api/v1/agents/${agent.slug}/run",
     headers={
         "Authorization": "Bearer ${apiToken}",
         "Content-Type": "application/json"
@@ -469,7 +469,7 @@ func main() {
 	payload, _ := json.Marshal(map[string]string{
 		"text": "Hello world",
 	})
-	req, _ := http.NewRequest("POST", "https://agentlab.dev/api/v1/agents/${agent.slug}/run", bytes.NewBuffer(payload))
+	req, _ := http.NewRequest("POST", "https://agentlab.rishit.site/api/v1/agents/${agent.slug}/run", bytes.NewBuffer(payload))
 	req.Header.Set("Authorization", "Bearer ${apiToken}")
 	req.Header.Set("Content-Type", "application/json")
 
