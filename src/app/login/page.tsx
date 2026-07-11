@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 function GoogleLogo() {
@@ -15,6 +16,10 @@ function GoogleLogo() {
 
 export default function LoginPage() {
   const supabase = createClient()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loginLoading, setLoginLoading] = useState(false)
 
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -23,6 +28,24 @@ export default function LoginPage() {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
+  }
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setLoginLoading(true)
+
+    const { error: err } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (err) {
+      setError(err.message)
+      setLoginLoading(false)
+    } else {
+      window.location.href = '/dashboard'
+    }
   }
 
   return (
@@ -62,6 +85,49 @@ export default function LoginPage() {
             <GoogleLogo />
             Sign in with Google
           </button>
+
+          <div className="relative my-6 flex py-1 items-center">
+            <div className="flex-grow border-t border-p-black/10"></div>
+            <span className="flex-shrink mx-4 text-xs font-semibold uppercase tracking-widest text-p-black/40">or</span>
+            <div className="flex-grow border-t border-p-black/10"></div>
+          </div>
+
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            {error && (
+              <div className="bg-p-red/10 border border-p-red text-p-red rounded-xl p-3 text-sm font-semibold">
+                {error}
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-bold text-p-black/70 mb-1">Test Account Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="test@agentlab.rishit.site"
+                required
+                className="w-full bg-p-bg text-p-black border-2 border-p-black rounded-xl px-4 py-3 font-sans focus:outline-none focus:ring-2 focus:ring-p-purple/50"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-p-black/70 mb-1">Test Account Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full bg-p-bg text-p-black border-2 border-p-black rounded-xl px-4 py-3 font-sans focus:outline-none focus:ring-2 focus:ring-p-purple/50"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="w-full bg-p-black text-white rounded-xl py-3 font-display font-bold hover:bg-p-black/90 transition-colors disabled:opacity-50"
+            >
+              {loginLoading ? 'Signing in...' : 'Sign in with Credentials'}
+            </button>
+          </form>
 
           <div className="mt-6 pt-6 border-t border-p-black/10 text-center">
             <p className="font-sans text-xs text-p-black/50">
