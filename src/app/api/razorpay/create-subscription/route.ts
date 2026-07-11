@@ -3,12 +3,12 @@ import Razorpay from 'razorpay'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const razorpay = new Razorpay({
-  key_id:     process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-})
-
 export async function POST(req: NextRequest) {
+  const razorpay = new Razorpay({
+    key_id:     process.env.RAZORPAY_KEY_ID!,
+    key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  })
+
   // 1. Auth check
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
