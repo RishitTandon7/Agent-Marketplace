@@ -37,7 +37,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${playfairDisplay.variable} scroll-smooth bg-p-bg text-p-black`}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${playfairDisplay.variable} bg-p-bg text-p-black`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <head>

@@ -66,8 +66,11 @@
   --black: #0A0A0A;
 }
 
-html {
+html[data-scroll-behavior="smooth"] {
   scroll-behavior: smooth;
+}
+
+html {
   background-color: #F4F4F0;
   color: #0A0A0A;
 }
