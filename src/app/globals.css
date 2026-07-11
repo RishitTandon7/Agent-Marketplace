@@ -1,26 +1,167 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ─────────────────────────────────────────
+   AgentHub Design System — Tailwind v4 CSS theme
+   ───────────────────────────────────────── */
+@theme {
+  /* Brand colors */
+  --color-p-bg:      #F4F4F0;
+  --color-p-surface: #FFFFFF;
+  --color-p-black:   #0A0A0A;
+  --color-p-red:     #FF4522;
+  --color-p-blue:    #2463EB;
+  --color-p-lime:    #D9F99D;
+  --color-p-purple:  #E9D5FF;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Fonts */
+  --font-sans:         'Inter', sans-serif;
+  --font-display:      'Space Grotesk', sans-serif;
+  --font-serif-italic: 'Playfair Display', serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Animations */
+  --animate-float:   float   6s ease-in-out infinite;
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes revealPage {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes smoothReveal {
+    0%   { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    0%   { opacity: 0; transform: translateY(-20px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes subtleGlitch {
+    0%   { transform: translate(0); }
+    20%  { transform: translate(-2px, 1px); }
+    40%  { transform: translate(-1px, -1px); }
+    60%  { transform: translate(2px, 1px); }
+    80%  { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+  }
+  @keyframes waves {
+    0%   { transform: translateY(-170px); }
+    100% { transform: translateY(0); }
   }
 }
 
+/* ── Waves animation class ──────────────────── */
+.waves {
+  animation: waves 6s ease-in-out infinite alternate;
+}
+
+/* ─── Base ─────────────────────────────── */
+:root {
+  --black: #0A0A0A;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #F4F4F0;
+  color: #0A0A0A;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F4F4F0;
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Text selection */
+::selection {
+  background-color: #FF4522;
+  color: white;
+}
+
+/* ─── Scrollbar ─────────────────────────── */
+::-webkit-scrollbar          { width: 12px; height: 12px; border-left: 2px solid var(--black); background: #F4F4F0; }
+::-webkit-scrollbar-thumb    { background: #D9F99D; border: 2px solid var(--black); border-radius: 99px; }
+
+/* ─── Utility classes ───────────────────── */
+.premium-shadow {
+  box-shadow: 6px 6px 0px var(--black);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.premium-shadow:hover  { transform: translate(-2px, -2px); box-shadow: 8px 8px 0px var(--black); }
+.premium-shadow:active { transform: translate(6px, 6px);  box-shadow: 0px 0px 0px var(--black); }
+
+.premium-static { box-shadow: 8px 8px 0px var(--black); }
+
+.premium-grid {
+  background-image: radial-gradient(#0A0A0A 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.06;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glass-brutal {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ─── Loading screen ────────────────────── */
+#loader {
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.8s,
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.loader-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: scale(1.05) !important;
+}
+
+.progress-bar-fill { transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.loading-step { opacity: 0.3; transform: translateY(5px); transition: all 0.3s ease; }
+.loading-step.active { opacity: 1; transform: translateY(0); color: var(--black); font-weight: 700; }
+.loading-step.done   { opacity: 0.5; text-decoration: line-through; transform: translateY(-2px); }
+
+.animate-glitch { animation: subtleGlitch 2s infinite ease-in-out alternate; }
+
+/* ─── Page reveal (landing only) ────────── */
+.page-loaded main,
+.page-loaded nav,
+.page-loaded footer {
+  animation: revealPage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+body.landing-page main,
+body.landing-page nav,
+body.landing-page footer { opacity: 0; }
+
+/* ─── Dashboard tab transitions ─────────── */
+.tab-content         { display: none; opacity: 0; }
+.tab-content.active  {
+  display: block;
+  animation: smoothReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.node-entry {
+  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform-origin: top;
+}
+
+/* ─── Toast ─────────────────────────────── */
+#toast {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity  0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
