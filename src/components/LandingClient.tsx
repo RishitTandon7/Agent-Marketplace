@@ -36,6 +36,8 @@ export default function LandingClient() {
   const progressFillRef = useRef<HTMLDivElement>(null)
   const progressTextRef = useRef<HTMLDivElement>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showLoader, setShowLoader] = useState(true)
+  const [loaderHidden, setLoaderHidden] = useState(false)
 
   const handleGoogleSignIn = async () => {
     const supabase = createClient()
@@ -56,10 +58,9 @@ export default function LandingClient() {
     // Mark body so the loader CSS only hides main/nav on this page
     document.body.classList.add('landing-page')
 
-    const loader = loaderRef.current
     const fill = progressFillRef.current
     const text = progressTextRef.current
-    if (!loader || !fill || !text) return
+    if (!fill || !text) return
 
     const steps = [
       { time: 300,  progress: 25,  stepId: 'step-1', nextId: 'step-2' },
@@ -100,9 +101,11 @@ export default function LandingClient() {
         fill.style.width = '100%'
         text.innerText = '100%'
         setTimeout(() => {
-          loader.classList.add('loader-hidden')
+          setLoaderHidden(true)
           document.body.classList.add('page-loaded')
-          setTimeout(() => loader.parentNode?.removeChild(loader), 800)
+          setTimeout(() => {
+            setShowLoader(false)
+          }, 800)
         }, 400)
       }, 1900)
       timers.push(hideTimer)
@@ -124,7 +127,14 @@ export default function LandingClient() {
   return (
     <>
       {/* ── Loading Screen ── */}
-      <div ref={loaderRef} id="loader" className="fixed inset-0 z-[100] bg-p-bg flex flex-col items-center justify-center overflow-hidden">
+      {showLoader && (
+        <div
+          ref={loaderRef}
+          id="loader"
+          className={`fixed inset-0 z-[100] bg-p-bg flex flex-col items-center justify-center overflow-hidden ${
+            loaderHidden ? 'loader-hidden' : ''
+          }`}
+        >
         <div className="absolute inset-0 premium-grid opacity-10" />
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-p-purple/20 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite] pointer-events-none" />
         <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-p-lime/20 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite] pointer-events-none" style={{ animationDelay: '-3s' }} />
@@ -161,6 +171,7 @@ export default function LandingClient() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Nav ── */}
       <nav className="relative z-50 border-b-2 border-p-black bg-p-surface/90 backdrop-blur-md sticky top-0">
