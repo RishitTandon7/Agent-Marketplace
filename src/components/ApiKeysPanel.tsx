@@ -195,7 +195,7 @@ export default function ApiKeysPanel() {
         <div>
           <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-2">cURL example</div>
           <pre className="font-mono text-xs text-p-lime bg-white/5 rounded-xl p-4 overflow-x-auto whitespace-pre-wrap leading-relaxed">{`curl -X POST \\
-  https://agentlab.dev/api/v1/agents/text-summarizer/run \\
+  https://agentlab.rishit.site/api/v1/agents/text-summarizer/run \\
   -H "Authorization: Bearer ahub_lv_<YOUR_KEY>" \\
   -H "Content-Type: application/json" \\
   -d '{"text": "Paste any text you want summarised..."}'`}</pre>
@@ -206,7 +206,7 @@ export default function ApiKeysPanel() {
           <pre className="font-mono text-xs text-p-lime bg-white/5 rounded-xl p-4 overflow-x-auto whitespace-pre-wrap leading-relaxed">{`import requests
 
 response = requests.post(
-    "https://agentlab.dev/api/v1/agents/text-summarizer/run",
+    "https://agentlab.rishit.site/api/v1/agents/text-summarizer/run",
     headers={"Authorization": "Bearer ahub_lv_<YOUR_KEY>"},
     json={"text": "Your text here..."}
 )
@@ -216,7 +216,7 @@ print(response.json())`}</pre>
         <div>
           <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-2">JavaScript / Node.js example</div>
           <pre className="font-mono text-xs text-p-lime bg-white/5 rounded-xl p-4 overflow-x-auto whitespace-pre-wrap leading-relaxed">{`const res = await fetch(
-  "https://agentlab.dev/api/v1/agents/sentiment-analyzer/run",
+  "https://agentlab.rishit.site/api/v1/agents/sentiment-analyzer/run",
   {
     method: "POST",
     headers: {
@@ -232,7 +232,7 @@ console.log(data.output);`}</pre>
 
         <div className="bg-white/5 rounded-xl p-4">
           <div className="font-sans text-xs text-white/60 space-y-1">
-            <div>• <strong className="text-white">Base URL:</strong> <code className="text-p-lime">https://agentlab.dev/api/v1/agents/[slug]/run</code></div>
+            <div>• <strong className="text-white">Base URL:</strong> <code className="text-p-lime">https://agentlab.rishit.site/api/v1/agents/[slug]/run</code></div>
             <div>• <strong className="text-white">Method:</strong> POST with JSON body</div>
             <div>• <strong className="text-white">Auth:</strong> Bearer token in Authorization header</div>
             <div>• <strong className="text-white">Rate limit:</strong> 60 req/min (free), 300 req/min (premium)</div>
