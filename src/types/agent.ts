@@ -10,8 +10,8 @@ export interface Agent {
   runtime_url?: string
   razorpay_plan_id?: string
   deployment_env: string
-  input_schema?: Record<string, any>
-  output_schema?: Record<string, any>
+  input_schema?: Record<string, unknown>
+  output_schema?: Record<string, unknown>
   active: boolean
   created_at: string
 }
