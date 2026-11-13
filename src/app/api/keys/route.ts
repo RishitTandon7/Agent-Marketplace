@@ -42,8 +42,6 @@ export async function POST(req: NextRequest) {
   const token = authHeader.replace('Bearer ', '').trim()
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
   const supabase = createAdminClient()
 
   const { data: { user }, error: authErr } = await supabase.auth.getUser(token)
@@ -90,8 +88,6 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const authHeader = req.headers.get('authorization') ?? ''
   const token = authHeader.replace('Bearer ', '').trim()
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const supabase = createAdminClient()
