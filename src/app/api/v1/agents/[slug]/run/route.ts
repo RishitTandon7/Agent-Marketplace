@@ -114,10 +114,8 @@ export async function POST(
   }
 
   // ── 5. Proxy to internal route ────────────────────────
-  const internalUrl = new URL(
-    `/api/agents/${slug}/internal`,
-    process.env.NEXT_PUBLIC_SITE_URL ?? `http://localhost:${process.env.PORT ?? 3000}`
-  )
+  // Use the origin this request arrived on, so it works on localhost, Vercel previews and prod alike
+  const internalUrl = new URL(`/api/agents/${slug}/internal`, req.nextUrl.origin)
 
   let agentOutput: Record<string, unknown>
   try {
@@ -136,7 +134,7 @@ export async function POST(
       )
     }
   } catch (err) {
-    console.error(`[v1/run] Agent ${slug} failed:`, err)
+    console.error(`[v1/run] Agent ${slug} failed at ${internalUrl}:`, err)
     return NextResponse.json({ error: 'Agent execution timed out or failed.' }, { status: 502 })
   }
 
