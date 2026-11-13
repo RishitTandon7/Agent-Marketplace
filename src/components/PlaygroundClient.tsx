@@ -414,7 +414,7 @@ export default function PlaygroundClient({ agent }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
           {/* ── Input Panel ── */}
-          <div className="bg-p-surface border-2 border-p-black rounded-3xl overflow-hidden premium-shadow flex flex-col">
+          <div className="bg-p-surface border-2 border-p-black rounded-3xl overflow-hidden premium-static flex flex-col">
             <div className="px-6 py-4 border-b-2 border-p-black/10 flex items-center justify-between">
               <span className="font-sans font-bold text-sm uppercase tracking-widest text-p-black/50">Input</span>
               <button
@@ -477,7 +477,7 @@ export default function PlaygroundClient({ agent }: Props) {
           <div className="flex flex-col gap-6">
 
             {/* Output card */}
-            <div className="bg-p-surface border-2 border-p-black rounded-3xl overflow-hidden premium-shadow flex-1 flex flex-col">
+            <div className="bg-p-surface border-2 border-p-black rounded-3xl overflow-hidden premium-static flex-1 flex flex-col">
               <div className="px-6 py-4 border-b-2 border-p-black/10 flex items-center justify-between">
                 <span className="font-sans font-bold text-sm uppercase tracking-widest text-p-black/50">Output</span>
                 {result && (

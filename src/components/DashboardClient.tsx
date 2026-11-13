@@ -286,7 +286,7 @@ export default function DashboardClient({
               </div>
 
               {/* Per-Agent Keys Grid/Table */}
-              <div className="bg-p-surface border-2 border-p-black rounded-2xl overflow-hidden premium-shadow">
+              <div className="bg-p-surface border-2 border-p-black rounded-2xl overflow-hidden premium-static">
                 <div className="px-6 py-4 bg-white/5 border-b border-p-black/10">
                   <h3 className="font-display font-bold text-lg">Your Activated Agent API Keys</h3>
                 </div>
@@ -625,7 +625,7 @@ func main() {
                 <p className="text-p-black/50 mt-1.5">Real-time container execution records and status telemetry.</p>
               </div>
 
-              <div className="bg-p-surface border-2 border-p-black rounded-2xl overflow-hidden premium-shadow">
+              <div className="bg-p-surface border-2 border-p-black rounded-2xl overflow-hidden premium-static">
                 <div className="px-6 py-4 bg-white/5 border-b border-p-black/10">
                   <h3 className="font-display font-bold text-lg">Execution Telemetry</h3>
                 </div>

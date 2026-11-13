@@ -48,7 +48,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ sl
       <main className="relative z-10 max-w-[1000px] mx-auto px-4 md:px-8 py-16">
 
         {/* Hero card */}
-        <div className="bg-p-surface border-2 border-p-black rounded-3xl overflow-hidden premium-shadow mb-12">
+        <div className="bg-p-surface border-2 border-p-black rounded-3xl overflow-hidden premium-static mb-12">
           <div className={`h-36 ${isPurple ? 'bg-p-purple' : 'bg-p-blue'} border-b-2 border-p-black p-8 relative overflow-hidden flex items-end`}>
             {/* Decorative rings */}
             <div className="absolute -bottom-12 -right-12 w-40 h-40 border-2 border-p-black/15 rounded-full" />
