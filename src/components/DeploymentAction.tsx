@@ -364,7 +364,7 @@ export default function DeploymentAction({
         subscription_id: subscriptionId,
         name: 'AgentLab',
         description: `${agentName} — Premium Subscription`,
-        image: '/favicon.ico',
+        image: '/icon.svg',
         theme: { color: '#0a0a0a' },
         // 3. Verify payment signature on our server before showing success
         handler: async (response: {

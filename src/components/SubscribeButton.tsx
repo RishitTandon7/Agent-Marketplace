@@ -57,7 +57,7 @@ export default function SubscribeButton({ agentSlug, agentName, priceInr }: Prop
         subscription_id: subscriptionId,
         name:            'AgentLab',
         description:     `${agentName} — Monthly Subscription`,
-        image:           '/favicon.ico',
+        image: '/icon.svg',
         theme:           { color: '#FF4522' },
         // 4. Verify signature server-side on payment success
         handler: async (response: {
