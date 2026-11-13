@@ -9,6 +9,25 @@ interface Props {
 
 type Lang = 'curl' | 'javascript' | 'python' | 'go'
 
+/** Render a JSON-compatible value as a Python literal (strings stay untouched). */
+function pyLiteral(value: unknown, indent = 0): string {
+  const pad = '    '.repeat(indent + 1)
+  const end = '    '.repeat(indent)
+  if (value === null || value === undefined) return 'None'
+  if (value === true) return 'True'
+  if (value === false) return 'False'
+  if (Array.isArray(value)) {
+    if (!value.length) return '[]'
+    return `[\n${value.map(v => pad + pyLiteral(v, indent + 1)).join(',\n')}\n${end}]`
+  }
+  if (typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+    if (!entries.length) return '{}'
+    return `{\n${entries.map(([k, v]) => `${pad}${JSON.stringify(k)}: ${pyLiteral(v, indent + 1)}`).join(',\n')}\n${end}}`
+  }
+  return JSON.stringify(value)
+}
+
 export default function CodeSnippetTabs({ slug, inputSchema }: Props) {
   const [activeLang, setActiveLang] = useState<Lang>('curl')
   const [copied, setCopied] = useState(false)
@@ -62,7 +81,7 @@ headers = {
     "Authorization": "Bearer ahub_lv_<your_api_key>",
     "Content-Type": "application/json"
 }
-payload = ${JSON.stringify(payload, null, 4).replace(/true/g, 'True').replace(/false/g, 'False').replace(/null/g, 'None').replace(/\n/g, '\n    ')}
+payload = ${pyLiteral(payload)}
 
 response = requests.post(url, headers=headers, json=payload)
 data = response.json()
@@ -86,7 +105,7 @@ func main() {
 	url := "https://agentlab.rishit.site/api/v1/agents/${slug}/run"
 	
 	payload := map[string]interface{}{
-		${Object.entries(payload).map(([k, v]) => `"${k}": ${typeof v === 'string' ? `"${v}"` : v},`).join('\n\t\t')}
+		${Object.entries(payload).map(([k, v]) => `${JSON.stringify(k)}: ${JSON.stringify(v)},`).join('\n\t\t')}
 	}
 
 	jsonValue, _ := json.Marshal(payload)
