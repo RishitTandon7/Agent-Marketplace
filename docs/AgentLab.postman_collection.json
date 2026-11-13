@@ -1,0 +1,357 @@
+{
+  "info": {
+    "name": "AgentLab API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "api_key",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "text-summarizer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Machine learning is a subset of AI that enables computers to learn from data.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/text-summarizer/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "text-summarizer",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "code-explainer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"code\": \"function f(n){return n<=1?n:f(n-1)+f(n-2)}\",\n  \"language\": \"JavaScript\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/code-explainer/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "code-explainer",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sentiment-analyzer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"I loved the product, delivery was fast!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/sentiment-analyzer/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "sentiment-analyzer",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "keyword-extractor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Machine learning is a subset of artificial intelligence.\",\n  \"max_keywords\": \"5\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/keyword-extractor/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "keyword-extractor",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "json-formatter",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"json\": \"{\\\"a\\\":1,\\\"b\\\":[1,2]}\",\n  \"action\": \"format\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/json-formatter/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "json-formatter",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "password-generator",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"count\": \"3\",\n  \"length\": \"16\",\n  \"include_numbers\": \"true\",\n  \"include_symbols\": \"true\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/password-generator/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "password-generator",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "email-drafter",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"topic\": \"Deadline extension\",\n  \"tone\": \"Professional\",\n  \"bullet_points\": \"- Need one more week\",\n  \"recipient_name\": \"Mr. Sharma\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/email-drafter/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "email-drafter",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "grammar-checker",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Their are many reason why good grammer is important.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/grammar-checker/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "grammar-checker",
+            "run"
+          ]
+        }
+      }
+    },
+    {
+      "name": "sms-sender",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"to\": \"+919876543210\",\n  \"message\": \"Hello from AgentLab\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://agentlab.rishit.site/api/v1/agents/sms-sender/run",
+          "protocol": "https",
+          "host": [
+            "agentlab",
+            "rishit",
+            "site"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "agents",
+            "sms-sender",
+            "run"
+          ]
+        }
+      }
+    }
+  ]
+}
