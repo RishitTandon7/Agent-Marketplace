@@ -30,10 +30,6 @@ function parseKeys(envVar: string | undefined): string[] {
   return (envVar ?? '').split(',').map(k => k.trim()).filter(Boolean)
 }
 
-function pickRandom<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)]
-}
-
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5)
 }
