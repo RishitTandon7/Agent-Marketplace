@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Razorpay from 'razorpay'
+import { getRazorpay } from '@/lib/razorpay'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(req: NextRequest) {
-  const razorpay = new Razorpay({
-    key_id:     process.env.RAZORPAY_KEY_ID!,
-    key_secret: process.env.RAZORPAY_KEY_SECRET!,
-  })
-
   // 1. Auth check
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -17,7 +12,13 @@ export async function POST(req: NextRequest) {
   }
 
   // 2. Parse body
-  const { agentSlug } = await req.json()
+  let agentSlug: string
+  try {
+    const body = await req.json()
+    agentSlug = body?.agentSlug ?? ''
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 })
+  }
   if (!agentSlug) {
     return NextResponse.json({ error: 'agentSlug is required' }, { status: 400 })
   }
@@ -57,37 +58,51 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (!profile) {
-    console.log('[razorpay-sub] Profile missing, creating self-healing profile row for user:', user.id)
+    console.log('[razorpay-sub] Creating self-healing profile row for user:', user.id)
     await admin.from('profiles').insert({
       id: user.id,
       email: user.email,
       full_name: user.user_metadata?.full_name ?? user.email,
-      avatar_url: user.user_metadata?.avatar_url
+      avatar_url: user.user_metadata?.avatar_url,
     })
   }
 
   // 5. Create Razorpay subscription
-  const subscription = await razorpay.subscriptions.create({
-    plan_id:        agent.razorpay_plan_id,
-    total_count:    12,         // 12 billing cycles
-    quantity:       1,
-    customer_notify: 1,
-    notes: {
-      user_id:  user.id,
-      agent_id: agent.id,
-    },
-  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let subscription: any
+  try {
+    const razorpay = getRazorpay()
+    subscription = await razorpay.subscriptions.create({
+      plan_id:         agent.razorpay_plan_id,
+      total_count:     12,         // 12 billing cycles (1 year)
+      quantity:        1,
+      customer_notify: 1,
+      notes: {
+        user_id:  user.id,
+        agent_id: agent.id,
+      },
+    })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Razorpay error'
+    console.error('[razorpay-sub] Create subscription failed:', msg)
+    return NextResponse.json({ error: `Payment provider error: ${msg}` }, { status: 502 })
+  }
 
-  // 6. Upsert subscription row as 'created'
-  await admin.from('subscriptions').upsert({
-    user_id:                 user.id,
-    agent_id:                agent.id,
+  // 6. Upsert subscription row as 'created' — webhook will flip to 'active'
+  const { error: upsertErr } = await admin.from('subscriptions').upsert({
+    user_id:                  user.id,
+    agent_id:                 agent.id,
     razorpay_subscription_id: subscription.id,
-    status:                  'created',
+    status:                   'created',
   }, { onConflict: 'user_id,agent_id' })
+
+  if (upsertErr) {
+    console.error('[razorpay-sub] DB upsert failed:', upsertErr)
+    return NextResponse.json({ error: 'Database error. Please try again.' }, { status: 500 })
+  }
 
   return NextResponse.json({
     subscriptionId: subscription.id,
-    keyId: process.env.RAZORPAY_KEY_ID,
+    keyId:          process.env.RAZORPAY_KEY_ID,
   })
 }
