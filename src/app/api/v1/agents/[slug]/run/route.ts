@@ -147,9 +147,9 @@ export async function POST(
     user_id:    keyRow.user_id,
     agent_id:   agent.id,
     api_key_id: keyRow.id,
-    input_data: input,
+    request_payload: input,
     duration_ms: durationMs,
-    status:     'success',
+    response_status: 'success',
   })
 
   void supabase.from('api_keys').update({
