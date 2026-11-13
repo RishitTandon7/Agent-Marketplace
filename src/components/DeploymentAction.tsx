@@ -154,12 +154,14 @@ function SuccessModal({
   isPremium,
   priceInr,
   onDismiss,
+  onDashboard,
 }: {
   agentName: string
   agentSlug: string
   isPremium: boolean
   priceInr: number
   onDismiss: () => void
+  onDashboard: () => void
 }) {
   return (
     <Portal>
@@ -240,7 +242,7 @@ function SuccessModal({
 
           {/* CTA */}
           <button
-            onClick={onDismiss}
+            onClick={onDashboard}
             style={{ width: '100%', background: '#0a0a0a', color: '#fff', border: 'none', borderRadius: 11, padding: '14px 20px', fontSize: 14, fontWeight: 700, letterSpacing: '0.03em', cursor: 'pointer', fontFamily: "'Space Grotesk', sans-serif", marginBottom: 12 }}
           >
             Go to Dashboard →
@@ -310,7 +312,12 @@ export default function DeploymentAction({
     setShowTerminal(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) { router.push('/login'); return }
+      if (!session) {
+        setShowTerminal(false)
+        setCurrentStep(0)
+        router.push('/login')
+        return
+      }
 
       const res = await fetch('/api/agents/deploy-free', {
         method: 'POST',
@@ -324,8 +331,8 @@ export default function DeploymentAction({
         const err = await res.json()
         throw new Error(err.error ?? 'Deployment failed')
       }
-    } catch (err: any) {
-      alert(err.message ?? 'Failed to deploy agent')
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Failed to deploy agent')
       setShowTerminal(false)
       setCurrentStep(0)
     } finally {
@@ -339,6 +346,7 @@ export default function DeploymentAction({
       const loaded = await loadRazorpayScript()
       if (!loaded) throw new Error('Could not load Razorpay checkout')
 
+      // 1. Create subscription server-side
       const res = await fetch('/api/razorpay/create-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -350,6 +358,7 @@ export default function DeploymentAction({
       }
       const { subscriptionId, keyId } = await res.json()
 
+      // 2. Open Razorpay checkout — verify server-side on success
       const rzp = new window.Razorpay({
         key: keyId,
         subscription_id: subscriptionId,
@@ -357,20 +366,58 @@ export default function DeploymentAction({
         description: `${agentName} — Premium Subscription`,
         image: '/favicon.ico',
         theme: { color: '#0a0a0a' },
-        handler: () => setShowSuccess(true),
+        // 3. Verify payment signature on our server before showing success
+        handler: async (response: {
+          razorpay_payment_id: string
+          razorpay_subscription_id: string
+          razorpay_signature: string
+        }) => {
+          try {
+            const verifyRes = await fetch('/api/razorpay/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_payment_id:      response.razorpay_payment_id,
+                razorpay_subscription_id: response.razorpay_subscription_id,
+                razorpay_signature:       response.razorpay_signature,
+              }),
+            })
+            if (!verifyRes.ok) {
+              const { error } = await verifyRes.json()
+              throw new Error(error ?? 'Payment verification failed')
+            }
+            // Show success — webhook will activate the subscription in DB
+            setLoading(false)
+            setShowSuccess(true)
+          } catch (verifyErr: unknown) {
+            const msg = verifyErr instanceof Error ? verifyErr.message : 'Payment verification failed'
+            alert(`⚠️ ${msg}. If amount was deducted, please contact support.`)
+            setLoading(false)
+          }
+        },
+        modal: {
+          ondismiss: () => setLoading(false),
+        },
       })
       rzp.open()
-    } catch (err: any) {
-      alert(err.message ?? 'Failed to subscribe')
-    } finally {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to subscribe'
+      alert(msg)
       setLoading(false)
     }
+    // Note: setLoading(false) for the success path happens inside rzp handler
   }
 
   const handleDismiss = () => {
     setShowSuccess(false)
     setDeployed(true)
     router.refresh()
+  }
+
+  const handleGoToDashboard = () => {
+    setShowSuccess(false)
+    setDeployed(true)
+    router.push('/dashboard')
   }
 
   if (deployed) {
@@ -392,7 +439,7 @@ export default function DeploymentAction({
         <button
           onClick={handleSubscribePremium}
           disabled={loading}
-          className="w-full md:w-auto bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-500 text-neutral-900 border-2 border-p-black rounded-xl px-8 py-4 font-display font-bold text-lg shadow-[4px_4px_0px_0px_rgba(10,10,10,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(10,10,10,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(10,10,10,1)] transition-all disabled:opacity-60"
+          className="w-full md:w-auto bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-500 text-neutral-900 border-2 border-p-black rounded-xl px-8 py-4 font-display font-bold text-lg shadow-[4px_4px_0px_0px_rgba(10,10,10,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(10,10,10,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(10,10,10,1)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? 'Processing…' : `Subscribe ₹${priceInr / 100}/mo`}
         </button>
@@ -400,7 +447,7 @@ export default function DeploymentAction({
         <button
           onClick={handleDeployFree}
           disabled={loading}
-          className="w-full md:w-auto bg-p-purple text-white border-2 border-p-black rounded-xl px-8 py-4 font-display font-bold text-lg premium-shadow hover:bg-p-black transition-all disabled:opacity-60"
+          className="w-full md:w-auto bg-p-purple text-p-black border-2 border-p-black rounded-xl px-8 py-4 font-display font-bold text-lg premium-shadow hover:bg-p-lime transition-all disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? 'Working…' : 'Claim Agent'}
         </button>
@@ -417,6 +464,7 @@ export default function DeploymentAction({
           isPremium={isPremium}
           priceInr={priceInr}
           onDismiss={handleDismiss}
+          onDashboard={handleGoToDashboard}
         />
       )}
     </>
