@@ -90,7 +90,13 @@ export async function POST(req: NextRequest) {
       (err instanceof Error ? err.message : rzpErr?.message) ??
       'Razorpay error'
     console.error('[razorpay-sub] Create subscription failed:', rzpErr?.statusCode, msg, 'plan:', agent.razorpay_plan_id)
-    return NextResponse.json({ error: `Payment provider error: ${msg}` }, { status: 502 })
+    // Safe diagnostics (never the secret itself) so a wrong env var is easy to spot
+    const id = process.env.RAZORPAY_KEY_ID ?? ''
+    const secretLen = (process.env.RAZORPAY_KEY_SECRET ?? '').length
+    const hint = /auth/i.test(msg)
+      ? ` [server is using key "${id.slice(0, 9)}…${id.slice(-4)}", secret length ${secretLen}; expected live key ending "f3V", length 24]`
+      : ''
+    return NextResponse.json({ error: `Payment provider error: ${msg}${hint}` }, { status: 502 })
   }
 
   // 6. Upsert subscription row as 'created' — webhook will flip to 'active'
