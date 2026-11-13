@@ -59,18 +59,46 @@ export default function SubscribeButton({ agentSlug, agentName, priceInr }: Prop
         description:     `${agentName} — Monthly Subscription`,
         image:           '/favicon.ico',
         theme:           { color: '#FF4522' },
-        handler: () => {
-          // Payment confirmed — refresh to show active subscription
-          router.refresh()
+        // 4. Verify signature server-side on payment success
+        handler: async (response: {
+          razorpay_payment_id: string
+          razorpay_subscription_id: string
+          razorpay_signature: string
+        }) => {
+          try {
+            const verifyRes = await fetch('/api/razorpay/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_payment_id:      response.razorpay_payment_id,
+                razorpay_subscription_id: response.razorpay_subscription_id,
+                razorpay_signature:       response.razorpay_signature,
+              }),
+            })
+            if (!verifyRes.ok) {
+              const { error } = await verifyRes.json()
+              throw new Error(error ?? 'Payment verification failed')
+            }
+            // Payment verified — refresh page (webhook will activate in DB)
+            router.refresh()
+          } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Verification failed'
+            alert(`⚠️ ${msg}. If amount was deducted, contact support.`)
+          } finally {
+            setLoading(false)
+          }
+        },
+        modal: {
+          ondismiss: () => setLoading(false),
         },
       })
       rzp.open()
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
       alert(msg)
-    } finally {
       setLoading(false)
     }
+    // Note: setLoading(false) for success path is inside rzp.handler
   }
 
   return (
